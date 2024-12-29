@@ -1,6 +1,7 @@
 import Banner from "./Banner";
 import CallUs from "./CallUs";
 import Category from "./Category";
+import ChefRecommend from "./ChefRecommend";
 import Featured from "./Featured";
 import PopularMenu from "./PopularMenu";
 import Show from "./Show";
@@ -14,6 +15,7 @@ const Home = () => {
       <Show />
       <PopularMenu />
       <CallUs />
+      <ChefRecommend />
       <Featured />
       <Testimonial />
     </div>
