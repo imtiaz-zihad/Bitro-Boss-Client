@@ -6,7 +6,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { useEffect, useState } from "react";
 import { Rating } from "@smastrom/react-rating";
-import '@smastrom/react-rating/style.css'
+import "@smastrom/react-rating/style.css";
+
+import { FaQuoteLeft } from "react-icons/fa";
 
 const Testimonial = () => {
   const [reviews, setReviews] = useState([]);
@@ -23,14 +25,17 @@ const Testimonial = () => {
       ></SectionTitle>
 
       <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+        
         {reviews.map((review) => (
           <SwiperSlide key={review._id}>
             <div className="flex flex-col items-center mx-24 my-16">
+            
               <Rating
                 style={{ maxWidth: 180 }}
                 value={review.rating}
                 readOnly
               />
+              <FaQuoteLeft className="text-5xl mt-10"></FaQuoteLeft>
               <p className="py-8">{review.details}</p>
               <h3 className="text-2xl text-orange-400">{review.name}</h3>
             </div>

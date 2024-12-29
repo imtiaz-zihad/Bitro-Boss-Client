@@ -26,7 +26,7 @@ const ChefRecommend = () => {
         </div>
         <div className="card bg-base-100 w-96 shadow-xl">
           <figure className="h-[200px]">
-            <img src={img1} alt="Shoes" className="w-full" />
+            <img src={img2} alt="Shoes" className="w-full" />
           </figure>
           <div className="card-body text-center">
             <h2 className="text-2xl">Caeser Salad</h2>
@@ -40,7 +40,7 @@ const ChefRecommend = () => {
         </div>
         <div className="card bg-base-100 w-96 shadow-xl">
           <figure className="h-[200px]">
-            <img src={img1} alt="Shoes" className="w-full" />
+            <img src={img3} alt="Shoes" className="w-full" />
           </figure>
           <div className="card-body text-center">
             <h2 className="text-2xl">Caeser Salad</h2>
