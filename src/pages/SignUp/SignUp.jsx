@@ -1,65 +1,32 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import {
-  loadCaptchaEnginge,
-  LoadCanvasTemplate,
-  validateCaptcha,
-} from "react-simple-captcha";
-import { AuthContext } from "../../providers/AuthProvider";
 import { Link } from "react-router-dom";
-const Login = () => {
-  const captchaRef = useRef(null);
-  const [disabled, setDisabled] = useState(true);
 
-  const {signIn} = useContext(AuthContext)
-  useEffect(() => {
-    loadCaptchaEnginge(6);
-  }, []);
-  const handleLogin = (event) => {
-    event.preventDefault();
-    const form = event.target;
-    const email = form.email.value;
-    const password = form.password.value;
-    console.table({ email, password });
-
-    signIn(email,password)
-    .then(result=>{
-      const user = result.user;
-      console.log(user);
-      
-    })
-  };
-  const handleValidateCaptcha = () => {
-    const user_captcha_value = captchaRef.current.value;
-    if (validateCaptcha(user_captcha_value)) {
-      setDisabled(false);
-      toast.success("Successfully Verified!");
-    } else {
-      setDisabled(true);
-      toast.error("Try Again !");
-    }
-  };
+const SignUp = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="flex flex-col-reverse md:flex-row items-center w-full max-w-4xl p-8 space-y-6 md:space-y-0 md:space-x-8 rounded-xl bg-white dark:bg-gray-50 dark:text-gray-800 shadow-lg">
-        {/* Left Image Section */}
-        <div className="hidden md:block w-full md:w-1/2">
-          <img
-            src="https://via.placeholder.com/400x400"
-            alt="Login Illustration"
-            className="object-cover w-full h-full rounded-lg"
-          />
-        </div>
+       
 
         {/* Login Form Section */}
         <div className="w-full md:w-1/2 max-w-md">
-          <h1 className="text-2xl font-bold text-center">Login</h1>
+          <h1 className="text-2xl font-bold text-center">SignUp</h1>
           <form
-            onSubmit={handleLogin}
+            // onSubmit={handleLogin}
             noValidate=""
             action=""
             className="space-y-6"
           >
+            <div className="space-y-1 text-sm">
+              <label htmlFor="username" className="block dark:text-gray-600">
+                Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                id="email"
+                placeholder="Type your name"
+                className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
+              />
+            </div>
             <div className="space-y-1 text-sm">
               <label htmlFor="username" className="block dark:text-gray-600">
                 Email
@@ -90,36 +57,14 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Captcha area  */}
-            <div className="space-y-1 text-sm">
-              <label htmlFor="password" className="block dark:text-gray-600">
-                Captcha
-                <LoadCanvasTemplate />
-              </label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  name="captcha"
-                  id="captcha"
-                  ref={captchaRef}
-                  placeholder="Type the captcha"
-                  className="flex-grow px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
-                />
-                <button
-                  onClick={handleValidateCaptcha}
-                  className="px-4 py-2 text-sm font-medium text-white bg-violet-600 rounded-md hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
-                >
-                  Validate
-                </button>
-              </div>
-            </div>
+           
 
             <div>
               <input
                 className="block w-full btn btn-primary"
-                disabled={disabled}
+                // disabled={disabled}
                 type="submit"
-                value="Login"
+                value="SignIn"
               />
             </div>
           </form>
@@ -160,21 +105,32 @@ const Login = () => {
             </button>
           </div>
           <p className="text-xs text-center sm:px-6 dark:text-gray-600">
-            Do not have an account?{" "}
+            have an account?{" "}
             <a
               rel="noopener noreferrer"
               href="#"
               className="underline dark:text-gray-800"
             >
-              <Link to='/signup'>
-              Sign up
+              <Link
+                to="/login"
+              >
+                Signup
               </Link>
             </a>
           </p>
+        </div>
+
+         {/* Left Image Section */}
+         <div className="hidden md:block w-full md:w-1/2">
+          <img
+            src="https://via.placeholder.com/400x400"
+            alt="Login Illustration"
+            className="object-cover w-full h-full rounded-lg"
+          />
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default SignUp;
