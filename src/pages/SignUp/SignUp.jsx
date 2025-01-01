@@ -1,16 +1,22 @@
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 const SignUp = () => {
+  const {
+    register,
+    handleSubmit,
+
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => console.log(data);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="flex flex-col-reverse md:flex-row items-center w-full max-w-4xl p-8 space-y-6 md:space-y-0 md:space-x-8 rounded-xl bg-white dark:bg-gray-50 dark:text-gray-800 shadow-lg">
-       
-
         {/* Login Form Section */}
         <div className="w-full md:w-1/2 max-w-md">
           <h1 className="text-2xl font-bold text-center">SignUp</h1>
           <form
-            // onSubmit={handleLogin}
+            onSubmit={handleSubmit(onSubmit)}
             noValidate=""
             action=""
             className="space-y-6"
@@ -22,10 +28,12 @@ const SignUp = () => {
               <input
                 type="text"
                 name="name"
-                id="email"
+                id="name"
+                {...register("name", { required: true })}
                 placeholder="Type your name"
                 className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
               />
+              {errors.name && <span>This field is required</span>}
             </div>
             <div className="space-y-1 text-sm">
               <label htmlFor="username" className="block dark:text-gray-600">
@@ -35,6 +43,7 @@ const SignUp = () => {
                 type="email"
                 name="email"
                 id="email"
+                {...register("email")}
                 placeholder="email"
                 className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
               />
@@ -47,17 +56,23 @@ const SignUp = () => {
                 type="password"
                 name="password"
                 id="password"
+                {...register("password", {
+                  required: true,
+                  minLength: 6,
+                  maxLength: 20,
+                })}
                 placeholder="Password"
                 className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
               />
+              {errors.password?.type === "required" && (
+                <p role="alert">password is required</p>
+              )}
               <div className="flex justify-end text-xs dark:text-gray-600">
                 <a rel="noopener noreferrer" href="#">
                   Forgot Password?
                 </a>
               </div>
             </div>
-
-           
 
             <div>
               <input
@@ -111,17 +126,13 @@ const SignUp = () => {
               href="#"
               className="underline dark:text-gray-800"
             >
-              <Link
-                to="/login"
-              >
-                Signup
-              </Link>
+              <Link to="/login">Signup</Link>
             </a>
           </p>
         </div>
 
-         {/* Left Image Section */}
-         <div className="hidden md:block w-full md:w-1/2">
+        {/* Left Image Section */}
+        <div className="hidden md:block w-full md:w-1/2">
           <img
             src="https://via.placeholder.com/400x400"
             alt="Login Illustration"
