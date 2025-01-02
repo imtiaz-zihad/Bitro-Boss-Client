@@ -145,8 +145,10 @@ const Login = () => {
 
             <div>
               <input
+                
                 className="block w-full btn btn-primary"
-                disabled={disabled}
+                // Change false to disabled after testing
+                disabled={false}
                 type="submit"
                 value="Login"
               />
