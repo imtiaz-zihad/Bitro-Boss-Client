@@ -1,22 +1,43 @@
 import { useContext } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
+import Swal from "sweetalert2";
 
 const SignUp = () => {
   const {
     register,
     handleSubmit,
-
+    reset,
     formState: { errors },
   } = useForm();
-  const {createUser} =useContext(AuthContext)
+  const {createUser,updateUserProfile} =useContext(AuthContext);
+  const navigate = useNavigate();
   const onSubmit = (data) =>{
     createUser(data.email, data.password)
     .then(result =>{
       const loggedUser =result.user;
       console.log(loggedUser);
+      console.log(data);
+      updateUserProfile(data.name, data.photoURL)
+      .then(() =>{
+        console.log('Profile Updated');
+        reset();
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "User Create Successfully",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        navigate('/')
+        
+      }).catch((error)=>{
+        console.log(error);
+        
+      })
+      
       
     })
   }
@@ -50,6 +71,21 @@ const SignUp = () => {
                 />
                 {errors.name && (
                   <span className="text-red-600">This field is required</span>
+                )}
+              </div>
+              <div className="space-y-1 text-sm">
+                <label htmlFor="username" className="block dark:text-gray-600">
+                  Photo URL
+                </label>
+                <input
+                  type="text"
+                  
+                  {...register("photoURL", { required: true })}
+                  placeholder="Photo URL"
+                  className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
+                />
+                {errors.photoURL && (
+                  <span className="text-red-600">photoURL is required</span>
                 )}
               </div>
               <div className="space-y-1 text-sm">
