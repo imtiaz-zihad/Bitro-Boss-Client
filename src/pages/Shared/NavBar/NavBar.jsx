@@ -30,7 +30,7 @@ const NavBar = () => {
       </li>
 
       <li>
-        <Link to="/">
+        <Link to="/dashboard/cart">
           <button className="btn">
           <IoMdCart className="mr-2" />
             <div className="badge badge-secondary">{cart.length}</div>
