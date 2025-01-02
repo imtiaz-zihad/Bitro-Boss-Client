@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
   loadCaptchaEnginge,
@@ -8,8 +8,9 @@ import {
 import { AuthContext } from "../../providers/AuthProvider";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import Swal from "sweetalert2";
 const Login = () => {
-  const captchaRef = useRef(null);
+  // const captchaRef = useRef(null);
   const [disabled, setDisabled] = useState(true);
 
   const {signIn} = useContext(AuthContext)
@@ -27,11 +28,28 @@ const Login = () => {
     .then(result=>{
       const user = result.user;
       console.log(user);
+      Swal.fire({
+        title: "Login successful",
+        showClass: {
+          popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+          `
+        },
+        hideClass: {
+          popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+          `
+        }
+      });
       
     })
   };
-  const handleValidateCaptcha = () => {
-    const user_captcha_value = captchaRef.current.value;
+  const handleValidateCaptcha = (e) => {
+    const user_captcha_value = e.target.value;
     if (validateCaptcha(user_captcha_value)) {
       setDisabled(false);
       toast.success("Successfully Verified!");
@@ -106,16 +124,17 @@ const Login = () => {
                   type="text"
                   name="captcha"
                   id="captcha"
-                  ref={captchaRef}
+                  onBlur={handleValidateCaptcha}
+                  // ref={captchaRef}
                   placeholder="Type the captcha"
                   className="flex-grow px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
                 />
-                <button
-                  onClick={handleValidateCaptcha}
+                {/* <button
+                  
                   className="px-4 py-2 text-sm font-medium text-white bg-violet-600 rounded-md hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500"
                 >
                   Validate
-                </button>
+                </button> */}
               </div>
             </div>
 
