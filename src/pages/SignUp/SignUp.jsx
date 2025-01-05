@@ -4,43 +4,63 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../../assets/hooks/useAxiosPublic";import SocialLogin from "../../../src/SocialLogin/SocialLogin";
+
 
 const SignUp = () => {
+  const axiosPublic = useAxiosPublic();
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-  const {createUser,updateUserProfile} =useContext(AuthContext);
+  const { createUser, updateUserProfile } = useContext(AuthContext);
   const navigate = useNavigate();
-  const onSubmit = (data) =>{
+
+  const onSubmit = (data) => {
     createUser(data.email, data.password)
-    .then(result =>{
-      const loggedUser =result.user;
-      console.log(loggedUser);
-      console.log(data);
-      updateUserProfile(data.name, data.photoURL)
-      .then(() =>{
-        console.log('Profile Updated');
-        reset();
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "User Create Successfully",
-          showConfirmButton: false,
-          timer: 1500
-        });
-        navigate('/')
-        
-      }).catch((error)=>{
-        console.log(error);
-        
+      .then((result) => {
+        const loggedUser = result.user;
+        console.log(loggedUser);
+        console.log(data);
+
+        updateUserProfile(data.name, data.photoURL)
+          .then(() => {
+            const userInfo = {
+              name: data.name,
+              email: data.email,
+            };
+
+            axiosPublic.post("/users", userInfo)
+              .then((response) => {
+                if (response.data.insertedId) {
+                  console.log("User created successfully");
+                  
+                  reset();
+                  Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "User Created Successfully",
+                    showConfirmButton: false,
+                    timer: 1500,
+                  });
+                  navigate("/");
+                }
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          })
+          .catch((error) => {
+            console.error("Error updating user profile:", error);
+          });
       })
-      
-      
-    })
-  }
+      .catch((error) => {
+        console.error("Error creating user:", error);
+      });
+  };
+
   return (
     <>
       <Helmet>
@@ -48,22 +68,19 @@ const SignUp = () => {
       </Helmet>
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="flex flex-col-reverse md:flex-row items-center w-full max-w-4xl p-8 space-y-6 md:space-y-0 md:space-x-8 rounded-xl bg-white dark:bg-gray-50 dark:text-gray-800 shadow-lg">
-          {/* Login Form Section */}
+          {/* Signup Form Section */}
           <div className="w-full md:w-1/2 max-w-md">
             <h1 className="text-2xl font-bold text-center">SignUp</h1>
             <form
               onSubmit={handleSubmit(onSubmit)}
-              noValidate=""
-              action=""
               className="space-y-6"
             >
               <div className="space-y-1 text-sm">
-                <label htmlFor="username" className="block dark:text-gray-600">
+                <label htmlFor="name" className="block dark:text-gray-600">
                   Name
                 </label>
                 <input
                   type="text"
-                  name="name"
                   id="name"
                   {...register("name", { required: true })}
                   placeholder="Type your name"
@@ -74,30 +91,29 @@ const SignUp = () => {
                 )}
               </div>
               <div className="space-y-1 text-sm">
-                <label htmlFor="username" className="block dark:text-gray-600">
+                <label htmlFor="photoURL" className="block dark:text-gray-600">
                   Photo URL
                 </label>
                 <input
                   type="text"
-                  
+                  id="photoURL"
                   {...register("photoURL", { required: true })}
                   placeholder="Photo URL"
                   className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
                 />
                 {errors.photoURL && (
-                  <span className="text-red-600">photoURL is required</span>
+                  <span className="text-red-600">Photo URL is required</span>
                 )}
               </div>
               <div className="space-y-1 text-sm">
-                <label htmlFor="username" className="block dark:text-gray-600">
+                <label htmlFor="email" className="block dark:text-gray-600">
                   Email
                 </label>
                 <input
                   type="email"
-                  name="email"
                   id="email"
                   {...register("email")}
-                  placeholder="email"
+                  placeholder="Email"
                   className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
                 />
               </div>
@@ -107,51 +123,36 @@ const SignUp = () => {
                 </label>
                 <input
                   type="password"
-                  name="password"
                   id="password"
                   {...register("password", {
                     required: true,
                     minLength: 6,
                     maxLength: 20,
-                    pattern:
-                      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/,
+                    pattern: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/,
                   })}
                   placeholder="Password"
                   className="w-full px-4 py-3 rounded-md dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
                 />
                 {errors.password?.type === "required" && (
-                  <p className="text-red-600" role="alert">
-                    password required{" "}
-                  </p>
+                  <p className="text-red-600">Password is required</p>
                 )}
                 {errors.password?.type === "minLength" && (
-                  <p className="text-red-600" role="alert">
-                    password must be 6 characters{" "}
-                  </p>
+                  <p className="text-red-600">Password must be at least 6 characters</p>
                 )}
-                {errors.password?.type === "required" && (
-                  <p className="text-red-600" role="alert">
-                    password must be less then 20 characters{" "}
-                  </p>
+                {errors.password?.type === "maxLength" && (
+                  <p className="text-red-600">Password must be less than 20 characters</p>
                 )}
                 {errors.password?.type === "pattern" && (
-                  <p className="text-red-600" role="alert">
-                    password must have one lowercase,one uppercase & one number
+                  <p className="text-red-600">
+                    Password must include one lowercase, one uppercase, and one number
                   </p>
                 )}
-                <div className="flex justify-end text-xs dark:text-gray-600">
-                  <a rel="noopener noreferrer" href="#">
-                    Forgot Password?
-                  </a>
-                </div>
               </div>
-
               <div>
                 <input
                   className="block w-full btn btn-primary"
-                  // disabled={disabled}
                   type="submit"
-                  value="SignIn"
+                  value="Sign Up"
                 />
               </div>
             </form>
@@ -163,18 +164,7 @@ const SignUp = () => {
               <div className="flex-1 h-px sm:w-16 dark:bg-gray-300"></div>
             </div>
             <div className="flex justify-center space-x-4">
-              <button
-                aria-label="Log in with Google"
-                className="p-3 rounded-sm"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 32 32"
-                  className="w-5 h-5 fill-current"
-                >
-                  <path d="M16.318 13.714v5.484h9.078c-0.37 2.354-2.745 6.901-9.078 6.901-5.458 0-9.917-4.521-9.917-10.099s4.458-10.099 9.917-10.099c3.109 0 5.193 1.318 6.38 2.464l4.339-4.182c-2.786-2.599-6.396-4.182-10.719-4.182-8.844 0-16 7.151-16 16s7.156 16 16 16c9.234 0 15.365-6.49 15.365-15.635 0-1.052-0.115-1.854-0.255-2.651z"></path>
-                </svg>
-              </button>
+              <SocialLogin/>
               <button
                 aria-label="Log in with Twitter"
                 className="p-3 rounded-sm"
@@ -201,22 +191,18 @@ const SignUp = () => {
               </button>
             </div>
             <p className="text-xs text-center sm:px-6 dark:text-gray-600">
-              have an account?{" "}
-              <a
-                rel="noopener noreferrer"
-                href="#"
-                className="underline dark:text-gray-800"
-              >
-                <Link to="/login">Signup</Link>
-              </a>
+              Already have an account?{" "}
+              <Link to="/login" className="underline dark:text-gray-800">
+                Login
+              </Link>
             </p>
           </div>
 
-          {/* Left Image Section */}
+          {/* Illustration Section */}
           <div className="hidden md:block w-full md:w-1/2">
             <img
               src="https://via.placeholder.com/400x400"
-              alt="Login Illustration"
+              alt="Signup Illustration"
               className="object-cover w-full h-full rounded-lg"
             />
           </div>
