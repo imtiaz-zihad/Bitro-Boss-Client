@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import Swal from "sweetalert2";
-import useAxiosPublic from "../../assets/hooks/useAxiosPublic";import SocialLogin from "../../../src/SocialLogin/SocialLogin";
-
+import useAxiosPublic from "../../assets/hooks/useAxiosPublic";
+import SocialLogin from "../../../src/SocialLogin/SocialLogin";
 
 const SignUp = () => {
   const axiosPublic = useAxiosPublic();
@@ -21,8 +21,9 @@ const SignUp = () => {
   const onSubmit = (data) => {
     createUser(data.email, data.password)
       .then((result) => {
-        const loggedUser = result.user;
-        console.log(loggedUser);
+        const user = result.user;
+        console.log(user);
+
         console.log(data);
 
         updateUserProfile(data.name, data.photoURL)
@@ -32,11 +33,12 @@ const SignUp = () => {
               email: data.email,
             };
 
-            axiosPublic.post("/users", userInfo)
+            axiosPublic
+              .post("/users", userInfo)
               .then((response) => {
                 if (response.data.insertedId) {
                   console.log("User created successfully");
-                  
+
                   reset();
                   Swal.fire({
                     position: "top-end",
@@ -71,10 +73,7 @@ const SignUp = () => {
           {/* Signup Form Section */}
           <div className="w-full md:w-1/2 max-w-md">
             <h1 className="text-2xl font-bold text-center">SignUp</h1>
-            <form
-              onSubmit={handleSubmit(onSubmit)}
-              className="space-y-6"
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-1 text-sm">
                 <label htmlFor="name" className="block dark:text-gray-600">
                   Name
@@ -137,14 +136,19 @@ const SignUp = () => {
                   <p className="text-red-600">Password is required</p>
                 )}
                 {errors.password?.type === "minLength" && (
-                  <p className="text-red-600">Password must be at least 6 characters</p>
+                  <p className="text-red-600">
+                    Password must be at least 6 characters
+                  </p>
                 )}
                 {errors.password?.type === "maxLength" && (
-                  <p className="text-red-600">Password must be less than 20 characters</p>
+                  <p className="text-red-600">
+                    Password must be less than 20 characters
+                  </p>
                 )}
                 {errors.password?.type === "pattern" && (
                   <p className="text-red-600">
-                    Password must include one lowercase, one uppercase, and one number
+                    Password must include one lowercase, one uppercase, and one
+                    number
                   </p>
                 )}
               </div>
@@ -164,7 +168,7 @@ const SignUp = () => {
               <div className="flex-1 h-px sm:w-16 dark:bg-gray-300"></div>
             </div>
             <div className="flex justify-center space-x-4">
-              <SocialLogin/>
+              <SocialLogin />
               <button
                 aria-label="Log in with Twitter"
                 className="p-3 rounded-sm"
