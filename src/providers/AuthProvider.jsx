@@ -10,6 +10,7 @@ import {
 } from "firebase/auth";
 import { createContext, useEffect, useState } from "react";
 import { auth } from "../firebase/firebase.config";
+import useAxiosPublic from "../assets/hooks/useAxiosPublic";
 
 export const AuthContext = createContext(null);
 
@@ -20,6 +21,7 @@ const AuthProvider = ({ children }) => {
   // import { auth } from "../Firebase/firebase.config";
 
   const googleProvider = new GoogleAuthProvider();
+  const axiosPublic = useAxiosPublic();
 
   const createUser = (email, password) => {
     setLoading(true);
@@ -27,33 +29,50 @@ const AuthProvider = ({ children }) => {
   };
   const signIn = (email, password) => {
     setLoading(true);
-    return signInWithEmailAndPassword(auth,email, password);
+    return signInWithEmailAndPassword(auth, email, password);
   };
   const googleSignIn = () => {
     setLoading(true);
     return signInWithPopup(auth, googleProvider);
-  }
-  const logOut= ()=>{
+  };
+  const logOut = () => {
     setLoading(true);
-    return signOut(auth)
-  }
+    return signOut(auth);
+  };
 
-  const updateUserProfile = (name,photo) =>{
-    return updateProfile(auth.currentUser,{
-      displayName: name, photoURL:photo
-    })
-  }
+  const updateUserProfile = (name, photo) => {
+    return updateProfile(auth.currentUser, {
+      displayName: name,
+      photoURL: photo,
+    });
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        //get token and store client side
+        const userInfo = {
+          email: currentUser.email,
+        };
+        axiosPublic.post("/jwt", userInfo).then((res) => {
+          if (res.data.token) {
+            localStorage.setItem("access-token", res.data.token);
+
+            console.log(res.data.token);
+          }
+        });
+      } else {
+        // TODO: remove token
+        localStorage.removeItem("access-token");
+      }
       console.log("Current user", user);
       setLoading(false);
     });
     return () => {
       return unsubscribe();
     };
-  }, []);
+  }, [axiosPublic]);
   const authInfo = {
     user,
     loading,
@@ -61,7 +80,7 @@ const AuthProvider = ({ children }) => {
     signIn,
     logOut,
     updateUserProfile,
-    googleSignIn
+    googleSignIn,
   };
   return (
     <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>

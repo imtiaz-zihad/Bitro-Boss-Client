@@ -29,7 +29,7 @@ const AllUsers = () => {
             refetch();
             Swal.fire({
               title: "Deleted!",
-              text:    `${user.name} has been deleted`,
+              text: `${user.name} has been deleted`,
               icon: "success",
             });
           }
@@ -45,12 +45,10 @@ const AllUsers = () => {
         if (res.data.modifiedCount > 0) {
           Swal.fire({
             title: "Success!",
-            text:   `${user.name} is now an admin`,
+            text: `${user.name} is now an admin`,
             icon: "success",
           });
-            
         }
-       
       })
       // eslint-disable-next-line no-unused-vars
       .catch((err) => {
@@ -86,12 +84,16 @@ const AllUsers = () => {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>
-                 {user.role === 'admin' ?"Admin ": <button
-                    onClick={() => handleMakeAdmin(user)}
-                    className="btn btn-ghost btn-xs text-2xl  text-orange-600"
-                  >
-                    <FaUsers />
-                  </button>}
+                  {user.role === "admin" ? (
+                    "Admin "
+                  ) : (
+                    <button
+                      onClick={() => handleMakeAdmin(user)}
+                      className="btn btn-ghost btn-xs text-2xl  text-orange-600"
+                    >
+                      <FaUsers />
+                    </button>
+                  )}
                 </td>
                 <td>
                   <button
