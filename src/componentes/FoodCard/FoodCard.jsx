@@ -1,22 +1,18 @@
-
 import Swal from "sweetalert2";
 import useAuth from "../../assets/hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAxiosSecure from "../../assets/hooks/useAxiosSecure";
 import useCart from "../../assets/hooks/useCart";
 
-
 /* eslint-disable react/prop-types */
 const FoodCard = ({ item }) => {
-  const {user} =useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const axiosSecure = useAxiosSecure();
-  const [,refetch] =useCart();
+  const [, refetch] = useCart();
 
-
-
-  const { name, image, price, recipe,_id} = item;
+  const { name, image, price, recipe, _id } = item;
   // eslint-disable-next-line no-unused-vars
   const handleAddToCart = () => {
     if (user && user.email) {
@@ -25,34 +21,36 @@ const FoodCard = ({ item }) => {
         email: user?.email,
         name,
         image,
-        price
-      }
-      axiosSecure.post('http://localhost:5000/carts',cartItem).then(res =>{
-        console.log(res.data);
-        if (res.data.insertedId) {
-          Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: `${name} added to your cart`,
-            showConfirmButton: false,
-            timer: 1500
-          });
-          //refetch cart
-          refetch();
-        }
-      })
-    }else{
+        price,
+      };
+      axiosSecure
+        .post("https://bistro-boss-server-sigma.vercel.app/carts", cartItem)
+        .then((res) => {
+          console.log(res.data);
+          if (res.data.insertedId) {
+            Swal.fire({
+              position: "top-end",
+              icon: "success",
+              title: `${name} added to your cart`,
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            //refetch cart
+            refetch();
+          }
+        });
+    } else {
       //
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: "You are not Login",
-        footer: '<a href="/login">Go for login</a>'
-      }).then((result)=>{
-        if(result.isConfirmed){
-          navigate('/login',{state:{from: location}})
+        footer: '<a href="/login">Go for login</a>',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login", { state: { from: location } });
         }
-      })
+      });
     }
   };
   return (

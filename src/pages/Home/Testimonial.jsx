@@ -13,7 +13,7 @@ import { FaQuoteLeft } from "react-icons/fa";
 const Testimonial = () => {
   const [reviews, setReviews] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/reviews")
+    fetch("https://bistro-boss-server-sigma.vercel.app/reviews")
       .then((res) => res.json())
       .then((data) => setReviews(data));
   }, []);
@@ -25,11 +25,9 @@ const Testimonial = () => {
       ></SectionTitle>
 
       <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
-        
         {reviews.map((review) => (
           <SwiperSlide key={review._id}>
             <div className="flex flex-col items-center mx-24 my-16">
-            
               <Rating
                 style={{ maxWidth: 180 }}
                 value={review.rating}

@@ -19,96 +19,112 @@ import PaymentHistory from "../pages/Dashboard/PaymentHistory/PaymentHistory";
 import UserHome from "../pages/Dashboard/UserHome/UserHome";
 import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
 
-
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Main />,
     children: [
-        {
-            path: '/',
-            element: <Home />
-        },
-        {
-            path: 'menu',
-            element: <Menu />
-        },
-        {
-            path: 'order/:category',
-            element: <Order />
-        },
-        {
-            path: 'login',
-            element: <Login/>
-        },
-        {
-            path: 'signup',
-            element: <SignUp/>
-        },
-        {
-            path: 'secret',
-            element: <PrivateRouter>
-                <Secret/>
-            </PrivateRouter>
-        },
-    ]
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "menu",
+        element: <Menu />,
+      },
+      {
+        path: "order/:category",
+        element: <Order />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "signup",
+        element: <SignUp />,
+      },
+      {
+        path: "secret",
+        element: (
+          <PrivateRouter>
+            <Secret />
+          </PrivateRouter>
+        ),
+      },
+    ],
   },
   {
     path: "dashboard",
-    element: <PrivateRouter><DashBoard /></PrivateRouter>,
+    element: (
+      <PrivateRouter>
+        <DashBoard />
+      </PrivateRouter>
+    ),
     children: [
+      // normal user routes
+      {
+        path: "userHome",
+        element: <UserHome />,
+      },
+      {
+        path: "cart",
+        element: <Cart />,
+      },
+      {
+        path: "payment",
+        element: <Payment />,
+      },
+      {
+        path: "paymentHistory",
+        element: <PaymentHistory />,
+      },
 
-        // normal user routes
-        {
-            path: 'userHome',
-            element: <UserHome />
-        },
-        {
-            path: 'cart',
-            element: <Cart />
-        },
-        {
-            path: 'payment',
-            element: <Payment />
-        },
-        {
-            path: 'paymentHistory',
-            element: <PaymentHistory />
-        },
-
-
-        // Admin only  routes
-        {
-            path: 'adminHome',
-            element: <AdminRouter>
-                <AdminHome />
-            </AdminRouter>
-        },
-        {
-            path: 'addItems',
-            element: <AdminRouter>
-                <AddItems />
-            </AdminRouter>
-        },
-        {
-            path: 'users',
-            element: <AdminRouter>
-                <AllUsers />
-            </AdminRouter>
-        },
-        {
-            path: 'manageItems',
-            element: <AdminRouter>
-                <ManageItems />
-            </AdminRouter>
-        },
-        {
-            path: 'UpdateItems/:id',
-            element: <AdminRouter>
-                <UpdateItem />
-            </AdminRouter>,
-            loader: ({params}) =>fetch(`http://localhost:5000/menu/${params.id}`)
-        },
-    ]
-  }
+      // Admin only  routes
+      {
+        path: "adminHome",
+        element: (
+          <AdminRouter>
+            <AdminHome />
+          </AdminRouter>
+        ),
+      },
+      {
+        path: "addItems",
+        element: (
+          <AdminRouter>
+            <AddItems />
+          </AdminRouter>
+        ),
+      },
+      {
+        path: "users",
+        element: (
+          <AdminRouter>
+            <AllUsers />
+          </AdminRouter>
+        ),
+      },
+      {
+        path: "manageItems",
+        element: (
+          <AdminRouter>
+            <ManageItems />
+          </AdminRouter>
+        ),
+      },
+      {
+        path: "UpdateItems/:id",
+        element: (
+          <AdminRouter>
+            <UpdateItem />
+          </AdminRouter>
+        ),
+        loader: ({ params }) =>
+          fetch(
+            `https://bistro-boss-server-sigma.vercel.app/menu/${params.id}`
+          ),
+      },
+    ],
+  },
 ]);
