@@ -60,14 +60,16 @@ const AuthProvider = ({ children }) => {
             localStorage.setItem("access-token", res.data.token);
 
             console.log(res.data.token);
+            setLoading(false);
           }
         });
       } else {
         // TODO: remove token
         localStorage.removeItem("access-token");
+        setLoading(false);
       }
       console.log("Current user", user);
-      setLoading(false);
+     
     });
     return () => {
       return unsubscribe();
